@@ -20,6 +20,7 @@ public class Dealer extends Observable {
 	private HashMap<Score, Integer> scoreToRankMap = new HashMap<Score, Integer>();
 	private HashMap<Score, Boolean> scoreToTiedMap = new HashMap<Score, Boolean>();
 	
+	int currCards =13;
 	enum DealerState {
 		CLEAR,
 		PREFLOP,
@@ -49,22 +50,6 @@ public class Dealer extends Observable {
 		case CLEAR:
 			newDeal();
 			break;
-			
-		case PREFLOP:
-			flop();
-			break;
-			
-		case FLOP:
-			turn();
-			break;
-			
-		case TURN:
-			river();
-			break;
-			
-		case RIVER:
-			clear();
-			break;
 		}
 	}
 	
@@ -76,13 +61,19 @@ public class Dealer extends Observable {
 	}
 	
 	private void dealHands() {
-		for (int i=0; i<13; i++) {
+		for (int i=0; i<currCards; i++) {
                     for (int j=0; j<handsTotal; j++) {
                             handCards[j][i] = deck.removeTailCard();
                             System.out.println(handCards[j][i].toString());
                     }
 		}
 		setChanged();
+	}
+	
+	public void addCard(){
+		handCards[0][currCards] = deck.removeTailCard();
+        System.out.println(handCards[0][currCards].toString());
+        currCards++;
 	}
 
 	private void flop() {
@@ -142,7 +133,7 @@ public class Dealer extends Observable {
 	
 	public void setHandsTotal(int hands) {
 		this.handsTotal = hands;
-		handCards = new Card[getHandsTotal()][13];
+		handCards = new Card[getHandsTotal()][52];
 	}
 	
 	public boolean isCompleted() {

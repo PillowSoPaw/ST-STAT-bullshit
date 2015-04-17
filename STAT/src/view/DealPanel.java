@@ -38,7 +38,7 @@ public class DealPanel extends javax.swing.JPanel {
 
         drawPanel = new TableDrawPanel();
         handsComboBox = new javax.swing.JComboBox();
-        dealButton = new javax.swing.JButton();
+        btnAddCard = new javax.swing.JButton();
 
         javax.swing.GroupLayout drawPanelLayout = new javax.swing.GroupLayout(drawPanel);
         drawPanel.setLayout(drawPanelLayout);
@@ -54,8 +54,8 @@ public class DealPanel extends javax.swing.JPanel {
         handsComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1 hand", "2 hands", "3 hands", "4 hands", "5 hands", "6 hands", "7 hands", "8 hands", "9 hands" }));
         handsComboBox.setSelectedIndex(0);
 
-        dealButton.setText("Deal");
-        dealButton.addActionListener(new java.awt.event.ActionListener() {
+        btnAddCard.setText("Add Card");
+        btnAddCard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
 					dealButtonActionPerformed(evt);
@@ -74,7 +74,7 @@ public class DealPanel extends javax.swing.JPanel {
                 .addContainerGap(256, Short.MAX_VALUE)
                 .addComponent(handsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(dealButton)
+                .addComponent(btnAddCard)
                 .addContainerGap())
             .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -84,18 +84,21 @@ public class DealPanel extends javax.swing.JPanel {
                 .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(dealButton)
+                    .addComponent(btnAddCard)
                     .addComponent(handsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>
 
     private void dealButtonActionPerformed(java.awt.event.ActionEvent evt) throws InterruptedException {
-    	deal();
+    	drawPanel.command =1;
+    	dealer.addCard();
+    	drawPanel.currCards++;
+    	repaint();
     }
     
     // Variables declaration - do not modify
-    private javax.swing.JButton dealButton;
+    private javax.swing.JButton btnAddCard;
     private TableDrawPanel drawPanel;
     private javax.swing.JComboBox handsComboBox;
     // End of variables declaration
@@ -134,7 +137,7 @@ public class DealPanel extends javax.swing.JPanel {
 		final JFrame jFrame = new JFrame();;
 		final DealPanel dealPanel = new DealPanel();
 		
-		jFrame.add(dealPanel);
+		jFrame.getContentPane().add(dealPanel);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
 
 		SwingUtilities.invokeLater(new Runnable() {

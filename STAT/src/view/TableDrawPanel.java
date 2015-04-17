@@ -19,6 +19,11 @@ public class TableDrawPanel extends JPanel implements Observer {
 	Dealer dealer; 
 	CardImages cardImages;
 	
+	//used for telling the paint() what to do once repaint is called.
+	int command;
+	//the current cards the player has
+	int currCards = 13;
+	
 	public TableDrawPanel() throws IOException {
 		// init images
 		
@@ -30,7 +35,8 @@ public class TableDrawPanel extends JPanel implements Observer {
 		setPreferredSize(new Dimension( 10 + 125 * 8 + 25 + cardImages.getWidth() + 10, 
 				10 + 150 + cardImages.getHeight() + 10 + 10));
 	}
-	
+	Card [][] handCards;
+	int xpos = 10;
 	@Override
     public void paint(Graphics g) {
 		super.paint(g);
@@ -44,39 +50,29 @@ public class TableDrawPanel extends JPanel implements Observer {
     				g.drawImage( cardImages.getCardImage(cards[i]), 100 + 100*i, 10, null);
     		}
     		
-    		Card [][] handCards = dealer.getHandCards();
-    		int xpos = 10;
-    		
+    		handCards = dealer.getHandCards();
     		for (int i = 0; i<dealer.getHandsTotal(); i++) {
-    			for(int j = 0; j < 13; j++){
+    			for(int j = 0; j < currCards; j++){
     			if (handCards[i][j] != null)
     				g.drawImage( cardImages.getCardImage(handCards[i][j]), xpos, 150, null);
-    			xpos += 75;
+    			xpos += 25;
     			}
     		}
-    		
-    		if (dealer.isScored()) {
-    			// draw scores and ranks
-    			Font font = new Font("Dialog", Font.BOLD, 12); 
-    			g.setFont(font);
-    			
-        		xpos = 10;
-				
-    			for (int i = 0; i<dealer.getHandsTotal(); i++) {
-    				Score score = dealer.getScoreByHand(i);
-    				int rank = dealer.getRankByScore(score);
-    				
-    				if (rank == 1)
-    					g.setColor(Color.RED);
-    				else g.setColor(Color.BLACK);
-    				
-    				String str = Integer.toString(rank) + ", " + score.getPattern().toString().toUpperCase();
-    				g.drawString(str, xpos, 275);
-    				
-    				xpos += 125;
+    		xpos = 10;
+    	}
+    	
+    	if(command == 1){
+    		System.out.println("tama");
+    		for (int i = 0; i<dealer.getHandsTotal(); i++) {
+    			for(int j = 0; j < currCards; j++){
+    			if (handCards[i][j] != null)
+    				g.drawImage( cardImages.getCardImage(handCards[i][j]), xpos, 150, null);
+    			xpos += 25;
     			}
     		}
-    	}	
+    		xpos = 10;
+    	}
+    	
     }
 
 	@Override
