@@ -86,7 +86,7 @@ public class Card implements Comparable<Card> {
     public void setSuit(Suit suit) {
         this.suit = suit;
     }
-
+    
     public Rank getRank() {
         return rank;
     }

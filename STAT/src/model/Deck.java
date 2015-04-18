@@ -28,7 +28,7 @@ public class Deck {
 
         logger.debug("cards: " + toString());
     }
-
+    
     public void shuffle() {
         if (useGuShuffle)
                 shuffle1();
@@ -65,7 +65,11 @@ public class Deck {
     public Card removeHeadCard() {
         return cards.remove(0);
     }
-
+    
+    public boolean isEmpty()
+    {
+        return cards.isEmpty();
+    }
     //get and remove a card from the end of the deck
     public Card removeTailCard() {
         return ArrayListUtils.removeTail(cards);

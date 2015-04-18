@@ -8,18 +8,17 @@ import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JPanel;
-
 import model.Card;
 import model.CardImages;
 import model.Dealer;
+import model.Player;
 import model.Score;
 
-import org.apache.commons.*;
 public class TableDrawPanel extends JPanel implements Observer {
 	private static final long serialVersionUID = 1L;
 	Dealer dealer; 
 	CardImages cardImages;
-	
+	Player player;
 	//used for telling the paint() what to do once repaint is called.
 	int command;
 	//the current cards the player has
@@ -44,14 +43,15 @@ public class TableDrawPanel extends JPanel implements Observer {
     	
     	if (dealer != null) {
     		// draw the cards
+    		player = dealer.getHuman();
+                //this function displays the 5 cards for flop, river, etc. (FOR POKER)
+    		//Card [] cards = player.getHand();
+//    		for (int i = 0; i < 5; i++) {
+//    			if ( cards[i] != null )
+//    				g.drawImage( cardImages.getCardImage(cards[i]), 100 + 100*i, 10, null);
+//    		}
     		
-    		Card [] cards = dealer.getTableCards();
-    		for (int i = 0; i < 5; i++) {
-    			if ( cards[i] != null )
-    				g.drawImage( cardImages.getCardImage(cards[i]), 100 + 100*i, 10, null);
-    		}
-    		
-    		handCards = dealer.getHandCards();
+    		handCards = player.getHand();
     	
     			for(int j = 0; j < currCards; j++){
     			if (handCards[j] != null)
@@ -75,7 +75,7 @@ public class TableDrawPanel extends JPanel implements Observer {
     	}
     	
     	if(command == 2){
-    		handCards = dealer.getHandCards();
+    		//handCards = dealer.getHandCards();
         	
 			for(int j = 0; j < currCards; j++){
 			if (handCards[j] != null)

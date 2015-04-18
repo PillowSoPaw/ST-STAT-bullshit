@@ -6,23 +6,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Observable;
 
-import org.apache.commons.*;
 import org.apache.commons.lang3.ArrayUtils;
+
 public class Dealer extends Observable {
 	private Deck deck;
 	private int handsTotal;
-	private Card [] handCards;  
-	private Card [] tableCards = new Card[5];
+        private Player[] players = new Player[4];
+        private Card[] discardPile;
 	private DealerState dealerState = DealerState.CLEAR; 
 	private boolean scored = false;
-	
 	private ArrayList<Score> scoreList = new ArrayList<Score>();
 	private HashMap<Integer, Score> handToScoreMap = new HashMap<Integer, Score>();
 	private HashMap<Score, Integer> scoreToHandMap = new HashMap<Score, Integer>();
 	private HashMap<Score, Integer> scoreToRankMap = new HashMap<Score, Integer>();
 	private HashMap<Score, Boolean> scoreToTiedMap = new HashMap<Score, Boolean>();
 	
-	int currCards =13;
+	int currCards = 13;
 
 	enum DealerState {
 		CLEAR,
@@ -33,6 +32,10 @@ public class Dealer extends Observable {
 	}
 	
 	public Dealer() {
+                players[0] = new Player();
+                players[1] = new Player();
+                players[2] = new Player();
+                players[3] = new Player();
 		deck = new Deck();
 		setHandsTotal(1);
 	}
@@ -64,57 +67,43 @@ public class Dealer extends Observable {
 	}
 	
 	private void dealHands() {
-		for (int i=0; i<currCards; i++) {
-                    
-                            handCards[i] = deck.removeTailCard();
-                            System.out.println(handCards[i].toString());
+            int i = 0;
+		while (!deck.isEmpty()) {
+                    if(i == 4)
+                        i = 0;
+                    players[i].addCardToHand(deck.removeTailCard());
+                    i++;
 		}
+                System.out.println("ALL CARDS DEALT");
+                
+                for(i = 0; i < players.length; i++){
+                System.out.println("Player: " + i);
+                players[i].displayEntireHand();
+                }
 		setChanged();
 	}
 	
-	public void addCard(){
-		handCards[currCards] = deck.removeTailCard();
-        System.out.println(handCards[currCards].toString());
-        currCards++;
+        public Player[] getAllPlayers()
+        {
+            return this.players;
+        }
+        
+	public void addCard(Player player, Card card)
+        {
+		player.addCardToHand(deck.removeTailCard());
 	}
 	
-	public void removeCard(String card){
-		
-		for (int i=0; i<currCards; i++) {
-			if(handCards[i].toString().equals(card)){
-				handCards = ArrayUtils.remove(handCards, i);
-				currCards--;
-				break;
-			}
-		}
+	public void removeCard(Card card, Player player)
+        {	
+		player.removeCardFromHand(card);
 	}
-
-	private void flop() {
-		for (int i=0; i<3; i++) {
-			tableCards[i] = deck.removeTailCard();
-		}
-		dealerState = DealerState.FLOP;
-		setChanged();
-	}
-	
-	private void turn() {
-		tableCards[3] = deck.removeTailCard();
-		dealerState = DealerState.TURN;
-		setChanged();
-	}
-	
-	private void river() {
-		tableCards[4] = deck.removeTailCard();
-		dealerState = DealerState.RIVER;
-		setChanged();
-	}
-	
+        
 	public void clear() {
 		for (int i = 0; i < getHandsTotal(); i++) {
 		//	Arrays.fill(handCards[i], null);
 		}
 
-		Arrays.fill(tableCards, null);
+		//Arrays.fill(tableCards, null);
 		
 		dealerState = DealerState.CLEAR;
 		scored = false;
@@ -126,10 +115,10 @@ public class Dealer extends Observable {
 	public String toString() {	
 		String str = "";
 		
-		for (int i=0; i<5; i++) {
-			if (tableCards[i]!=null)
-				str += tableCards[i].toString() + ' ';
-		}
+		//for (int i=0; i<5; i++) {
+		//	if (tableCards[i]!=null)
+		//		str += tableCards[i].toString() + ' ';
+		//}
 		
 		String NL = System.getProperty("line.separator");
 		str += NL;
@@ -145,7 +134,7 @@ public class Dealer extends Observable {
 	
 	public void setHandsTotal(int hands) {
 		this.handsTotal = hands;
-		handCards = new Card[52];
+		//handCards = new Card[52];
 	}
 	
 	public boolean isCompleted() {
@@ -222,11 +211,11 @@ public class Dealer extends Observable {
 	private Card [] getCombinedCards(int hand) {
 		Card [] cards = new Card[7];
 		
-		for (int j=0; j<5; j++) 
-			cards[j] = getTableCards()[j];
+		//for (int j=0; j<5; j++) 
+		//	cards[j] = getTableCards()[j];
 			
-		for (int j=0; j<13; j++) 
-			cards[5+j] = getHandCards()[j];
+//		for (int j=0; j<13; j++) 
+//			cards[5+j] = getHandCards()[j];
 		
 		return cards;
 	}
@@ -237,7 +226,12 @@ public class Dealer extends Observable {
 	public Deck getDeck() {
 		return deck;
 	}
-
+        
+        public Player getHuman()
+        {
+            return players[0];
+        }
+        
 	public void setDeck(Deck deck) {
 		this.deck = deck;
 	}
@@ -246,21 +240,21 @@ public class Dealer extends Observable {
 		return handsTotal;
 	}
 
-	public Card[] getHandCards() {
-		return handCards;
+	public Card[] getDiscardPile() {
+		return discardPile;
 	}
 
-	public void setHandCards(Card[] handCards) {
-		this.handCards = handCards;
+	public void setDiscardPile(Card[] handCards) {
+		this.discardPile = handCards;
 	}
 
-	public Card[] getTableCards() {
-		return tableCards;
-	}
-
-	public void setTableCards(Card[] tableCards) {
-		this.tableCards = tableCards;
-	}
+//	public Card[] getTableCards() {
+//		return tableCards;
+//	}
+//
+//	public void setTableCards(Card[] tableCards) {
+//		this.tableCards = tableCards;
+//	}
 
 	public DealerState getDealerState() {
 		return dealerState;
@@ -297,26 +291,25 @@ public class Dealer extends Observable {
 	public static void main(String[] args) {
 		Dealer dealer = new Dealer();
 		
-		while (!dealer.isCompleted())
-			dealer.deal();
+		dealer.deal();
 		
-		System.out.println(dealer.toString());
+		//System.out.println(dealer.toString());
 		
 		// evaluate and rank each hand *remove this shit after the final product*
 		//dealer.scoreHands();
 		
-		ArrayList<Score> scoreList = dealer.getScoreList();
-
-		for (int i=0; i<dealer.getHandsTotal(); i++) {
-			
-			Score score = scoreList.get(dealer.getHandsTotal()-i-1);
-			
-			int hand = dealer.getHandByScore(score);
-			int rank = dealer.getRankByScore(score);
-			boolean isTied = dealer.isTied(score);
-			
-			System.out.println("rank: " + rank + ", hand: " + (hand+1) + 
-					", score: " + score.toString() + ( isTied? " (tied)" : "") );
-		}	
+//		ArrayList<Score> scoreList = dealer.getScoreList();
+//
+//		for (int i=0; i<dealer.getHandsTotal(); i++) {
+//			
+//			Score score = scoreList.get(dealer.getHandsTotal()-i-1);
+//			
+//			int hand = dealer.getHandByScore(score);
+//			int rank = dealer.getRankByScore(score);
+//			boolean isTied = dealer.isTied(score);
+//			
+//			System.out.println("rank: " + rank + ", hand: " + (hand+1) + 
+//					", score: " + score.toString() + ( isTied? " (tied)" : "") );
+//		}	
 	}
 }

@@ -93,7 +93,7 @@ public class DealPanel extends javax.swing.JPanel {
         		
         		String card = rank+suit;
       
-        		dealer.removeCard(card);
+        		//dealer.removeCard(card);
         		
         		drawPanel.command =2;
         		drawPanel.currCards--;
@@ -135,9 +135,6 @@ public class DealPanel extends javax.swing.JPanel {
 
     
     private void dealButtonActionPerformed(java.awt.event.ActionEvent evt) throws InterruptedException {
-    	drawPanel.command =1;
-    	dealer.addCard();
-    	drawPanel.currCards++;
     	repaint();
     }
     
@@ -210,26 +207,27 @@ public class DealPanel extends javax.swing.JPanel {
 		jFrame.getContentPane().add(dealPanel);
 		jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE );
 
-		SwingUtilities.invokeLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				jFrame.pack();
-				jFrame.setVisible(true);
-			}
-		});
+//		SwingUtilities.invokeLater(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				jFrame.pack();
+//				jFrame.setVisible(true);
+//			}
+//		});
 		
 		// animation 
 		// deal, flop, turn, river, score
-		for (int i = 0; i < 5; i++) {
-			Thread.sleep(100);
+                jFrame.pack();
+                jFrame.setVisible(true);
+                Players[] players;
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
 				public void run() {
 					dealPanel.deal();
+                                        players = dealer.getAllPlayers();
 				}
-			});
-		}	
+			});	
 	}
 }
