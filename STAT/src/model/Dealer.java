@@ -83,6 +83,8 @@ public class Dealer extends Observable {
 		for (int i=0; i<currCards; i++) {
 			if(handCards[i].toString().equals(card)){
 				handCards = ArrayUtils.remove(handCards, i);
+				currCards--;
+				break;
 			}
 		}
 	}

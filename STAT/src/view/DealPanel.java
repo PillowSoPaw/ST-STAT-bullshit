@@ -92,10 +92,11 @@ public class DealPanel extends javax.swing.JPanel {
         		String rank = rankConvert(selectedRank.toString());
         		
         		String card = rank+suit;
-        		System.out.println(card);
+      
         		dealer.removeCard(card);
         		
         		drawPanel.command =2;
+        		drawPanel.currCards--;
             	repaint();
         	}
         });
