@@ -1,18 +1,24 @@
 package view;
 
 import java.io.IOException;
+
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import model.Dealer;
+import model.Card.Rank;
 
 import org.apache.log4j.Logger;
+
 import javax.swing.JButton;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class DealPanel extends javax.swing.JPanel {
 
@@ -72,17 +78,31 @@ public class DealPanel extends javax.swing.JPanel {
             }
         });
         
-        JButton btnRemoveCard = new JButton("Remove Card");
+        JComboBox rankComboBox = new JComboBox();
+        rankComboBox.setModel(new DefaultComboBoxModel(new String[] {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"}));
         
-        JComboBox comboBox = new JComboBox();
-        comboBox.setModel(new DefaultComboBoxModel(new String[] {"A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"}));
+        JButton btnRemoveCard = new JButton("Remove Card");
+        btnRemoveCard.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		Object selectedSuit = handsComboBox.getSelectedItem();
+        		String suit = selectedSuit.toString();
+        		
+        		Object selectedRank = rankComboBox.getSelectedItem();
+        		String rank = selectedRank.toString();
+        		
+        		String card = rank+suit;
+        		dealer.removeCard(card);
+        	}
+        });
+        
+        
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         layout.setHorizontalGroup(
         	layout.createParallelGroup(Alignment.TRAILING)
         		.addGroup(layout.createSequentialGroup()
         			.addContainerGap(209, Short.MAX_VALUE)
-        			.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
         			.addGap(18)
         			.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
         			.addPreferredGap(ComponentPlacement.RELATED)
@@ -101,12 +121,13 @@ public class DealPanel extends javax.swing.JPanel {
         				.addComponent(btnAddCard)
         				.addComponent(btnRemoveCard)
         				.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        				.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         			.addContainerGap())
         );
         this.setLayout(layout);
     }// </editor-fold>
 
+    
     private void dealButtonActionPerformed(java.awt.event.ActionEvent evt) throws InterruptedException {
     	drawPanel.command =1;
     	dealer.addCard();
@@ -121,6 +142,32 @@ public class DealPanel extends javax.swing.JPanel {
     // End of variables declaration
 
     int dealState = 0;
+    
+    public String suitConvert(String suit){
+    	switch(suit){
+    	case "Heart":
+    		return "H";
+    	case "Spade":
+    		return "S";
+    	case "Club":
+    		return "C";
+    	default:
+    		return "D";
+    	}
+    }
+    
+    public String rankConvert(String rank){
+    	switch(rank){
+    	case "Jack":
+    		return "J";
+    	case "Queen":
+    		return "Q";
+    	case "King":
+    		return "K";
+    	default:
+    		return rank;
+    	}
+    }
     
     /**
      * deal once
