@@ -14,6 +14,7 @@ import model.CardImages;
 import model.Dealer;
 import model.Score;
 
+import org.apache.commons.*;
 public class TableDrawPanel extends JPanel implements Observer {
 	private static final long serialVersionUID = 1L;
 	Dealer dealer; 
@@ -32,10 +33,9 @@ public class TableDrawPanel extends JPanel implements Observer {
 		// margin: 10
 		// width for 9 hands
 		
-		setPreferredSize(new Dimension( 10 + 125 * 8 + 25 + cardImages.getWidth() + 10, 
-				10 + 150 + cardImages.getHeight() + 10 + 10));
+		setPreferredSize(new Dimension(1120, 373));
 	}
-	Card [][] handCards;
+	Card [] handCards;
 	int xpos = 10;
 	@Override
     public void paint(Graphics g) {
@@ -51,26 +51,30 @@ public class TableDrawPanel extends JPanel implements Observer {
     		}
     		
     		handCards = dealer.getHandCards();
-    		for (int i = 0; i<dealer.getHandsTotal(); i++) {
+    	
     			for(int j = 0; j < currCards; j++){
-    			if (handCards[i][j] != null)
-    				g.drawImage( cardImages.getCardImage(handCards[i][j]), xpos, 150, null);
+    			if (handCards[j] != null)
+    				g.drawImage( cardImages.getCardImage(handCards[j]), xpos, 150, null);
     			xpos += 25;
     			}
-    		}
+    		
     		xpos = 10;
     	}
     	
     	if(command == 1){
-    		System.out.println("tama");
-    		for (int i = 0; i<dealer.getHandsTotal(); i++) {
+    		//note that my method refreshes the whole hand instead of adding the card.
+    		
     			for(int j = 0; j < currCards; j++){
-    			if (handCards[i][j] != null)
-    				g.drawImage( cardImages.getCardImage(handCards[i][j]), xpos, 150, null);
+    			if (handCards[j] != null)
+    				g.drawImage( cardImages.getCardImage(handCards[j]), xpos, 150, null);
     			xpos += 25;
     			}
-    		}
+    		
     		xpos = 10;
+    	}
+    	
+    	if(command == 2){
+    		
     	}
     	
     }

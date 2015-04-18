@@ -7,6 +7,11 @@ import javax.swing.SwingUtilities;
 import model.Dealer;
 
 import org.apache.log4j.Logger;
+import javax.swing.JButton;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.DefaultComboBoxModel;
 
 public class DealPanel extends javax.swing.JPanel {
 
@@ -51,7 +56,7 @@ public class DealPanel extends javax.swing.JPanel {
             .addGap(0, 255, Short.MAX_VALUE)
         );
 
-        handsComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1 hand", "2 hands", "3 hands", "4 hands", "5 hands", "6 hands", "7 hands", "8 hands", "9 hands" }));
+        handsComboBox.setModel(new DefaultComboBoxModel(new String[] {"Heart", "Diamond", "Spade", "Club"}));
         handsComboBox.setSelectedIndex(0);
 
         btnAddCard.setText("Add Card");
@@ -65,29 +70,34 @@ public class DealPanel extends javax.swing.JPanel {
 				}
             }
         });
+        
+        JButton btnRemoveCard = new JButton("Remove Card");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(256, Short.MAX_VALUE)
-                .addComponent(handsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(btnAddCard)
-                .addContainerGap())
-            .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        	layout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(layout.createSequentialGroup()
+        			.addContainerGap(167, Short.MAX_VALUE)
+        			.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        			.addGap(18)
+        			.addComponent(btnRemoveCard, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+        			.addGap(18)
+        			.addComponent(btnAddCard, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap())
+        		.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(drawPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAddCard)
-                    .addComponent(handsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+        	layout.createParallelGroup(Alignment.TRAILING)
+        		.addGroup(layout.createSequentialGroup()
+        			.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+        				.addComponent(btnAddCard)
+        				.addComponent(btnRemoveCard)
+        				.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        			.addContainerGap())
         );
+        this.setLayout(layout);
     }// </editor-fold>
 
     private void dealButtonActionPerformed(java.awt.event.ActionEvent evt) throws InterruptedException {

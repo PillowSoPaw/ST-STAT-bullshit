@@ -6,10 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Observable;
 
+import org.apache.commons.*;
+import org.apache.commons.lang3.ArrayUtils;
 public class Dealer extends Observable {
 	private Deck deck;
 	private int handsTotal;
-	private Card [][] handCards;  
+	private Card [] handCards;  
 	private Card [] tableCards = new Card[5];
 	private DealerState dealerState = DealerState.CLEAR; 
 	private boolean scored = false;
@@ -21,6 +23,7 @@ public class Dealer extends Observable {
 	private HashMap<Score, Boolean> scoreToTiedMap = new HashMap<Score, Boolean>();
 	
 	int currCards =13;
+
 	enum DealerState {
 		CLEAR,
 		PREFLOP,
@@ -62,18 +65,26 @@ public class Dealer extends Observable {
 	
 	private void dealHands() {
 		for (int i=0; i<currCards; i++) {
-                    for (int j=0; j<handsTotal; j++) {
-                            handCards[j][i] = deck.removeTailCard();
-                            System.out.println(handCards[j][i].toString());
-                    }
+                    
+                            handCards[i] = deck.removeTailCard();
+                            System.out.println(handCards[i].toString());
 		}
 		setChanged();
 	}
 	
 	public void addCard(){
-		handCards[0][currCards] = deck.removeTailCard();
-        System.out.println(handCards[0][currCards].toString());
+		handCards[currCards] = deck.removeTailCard();
+        System.out.println(handCards[currCards].toString());
         currCards++;
+	}
+	
+	public void removeCard(String card){
+		
+		for (int i=0; i<currCards; i++) {
+			if(handCards[currCards].toString().equals(card)){
+		//		handCards[0][] = ArrayUtils.remove(HandCards[0], i);
+			}
+		}
 	}
 
 	private void flop() {
@@ -98,7 +109,7 @@ public class Dealer extends Observable {
 	
 	public void clear() {
 		for (int i = 0; i < getHandsTotal(); i++) {
-			Arrays.fill(handCards[i], null);
+		//	Arrays.fill(handCards[i], null);
 		}
 
 		Arrays.fill(tableCards, null);
@@ -121,19 +132,18 @@ public class Dealer extends Observable {
 		String NL = System.getProperty("line.separator");
 		str += NL;
 		
-		for (int i = 0; i <  handsTotal; i++) {
-			if (handCards[i][0] != null) {
-				str += (i+1) + ": " + handCards[i][0].toString() + ' ';
-				str += handCards[i][1].toString() + "  ";
-			}
-		}
+		
+	//			str += (i+1) + ": " + handCards[0].toString() + ' ';
+	//			str += handCards[1].toString() + "  ";
+			
+		
 		
 		return str;
 	}
 	
 	public void setHandsTotal(int hands) {
 		this.handsTotal = hands;
-		handCards = new Card[getHandsTotal()][52];
+		handCards = new Card[52];
 	}
 	
 	public boolean isCompleted() {
@@ -214,7 +224,7 @@ public class Dealer extends Observable {
 			cards[j] = getTableCards()[j];
 			
 		for (int j=0; j<13; j++) 
-			cards[5+j] = getHandCards()[hand][j];
+			cards[5+j] = getHandCards()[j];
 		
 		return cards;
 	}
@@ -234,11 +244,11 @@ public class Dealer extends Observable {
 		return handsTotal;
 	}
 
-	public Card[][] getHandCards() {
+	public Card[] getHandCards() {
 		return handCards;
 	}
 
-	public void setHandCards(Card[][] handCards) {
+	public void setHandCards(Card[] handCards) {
 		this.handCards = handCards;
 	}
 
