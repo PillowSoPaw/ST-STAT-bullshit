@@ -33,9 +33,10 @@ public class TableDrawPanel extends JPanel implements Observer {
 		// margin: 10
 		// width for 9 hands
 		
-		setPreferredSize(new Dimension(1120, 373));
+		setPreferredSize(new Dimension(990, 373));
 	}
 	Card [] handCards;
+	String cardToRemove;
 	int xpos = 10;
 	@Override
     public void paint(Graphics g) {

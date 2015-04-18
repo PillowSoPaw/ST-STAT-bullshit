@@ -12,6 +12,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 
 public class DealPanel extends javax.swing.JPanel {
 
@@ -72,29 +73,35 @@ public class DealPanel extends javax.swing.JPanel {
         });
         
         JButton btnRemoveCard = new JButton("Remove Card");
+        
+        JComboBox comboBox = new JComboBox();
+        comboBox.setModel(new DefaultComboBoxModel(new String[] {"A", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"}));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         layout.setHorizontalGroup(
         	layout.createParallelGroup(Alignment.TRAILING)
         		.addGroup(layout.createSequentialGroup()
-        			.addContainerGap(167, Short.MAX_VALUE)
-        			.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        			.addContainerGap(209, Short.MAX_VALUE)
+        			.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
         			.addGap(18)
-        			.addComponent(btnRemoveCard, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
-        			.addGap(18)
-        			.addComponent(btnAddCard, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
+        			.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(btnRemoveCard, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addComponent(btnAddCard, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap())
-        		.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+        		.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
         	layout.createParallelGroup(Alignment.TRAILING)
         		.addGroup(layout.createSequentialGroup()
-        			.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+        			.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addGroup(layout.createParallelGroup(Alignment.BASELINE)
         				.addComponent(btnAddCard)
         				.addComponent(btnRemoveCard)
-        				.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        				.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         			.addContainerGap())
         );
         this.setLayout(layout);
