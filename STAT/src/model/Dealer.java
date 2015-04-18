@@ -81,8 +81,8 @@ public class Dealer extends Observable {
 	public void removeCard(String card){
 		
 		for (int i=0; i<currCards; i++) {
-			if(handCards[currCards].toString().equals(card)){
-		//		handCards[0][] = ArrayUtils.remove(HandCards[0], i);
+			if(handCards[i].toString().equals(card)){
+				handCards = ArrayUtils.remove(handCards, i);
 			}
 		}
 	}

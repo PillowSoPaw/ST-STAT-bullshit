@@ -85,13 +85,18 @@ public class DealPanel extends javax.swing.JPanel {
         btnRemoveCard.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		Object selectedSuit = handsComboBox.getSelectedItem();
-        		String suit = selectedSuit.toString();
+        		String suit = suitConvert(selectedSuit.toString());
+        		
         		
         		Object selectedRank = rankComboBox.getSelectedItem();
-        		String rank = selectedRank.toString();
+        		String rank = rankConvert(selectedRank.toString());
         		
         		String card = rank+suit;
+        		System.out.println(card);
         		dealer.removeCard(card);
+        		
+        		drawPanel.command =2;
+            	repaint();
         	}
         });
         

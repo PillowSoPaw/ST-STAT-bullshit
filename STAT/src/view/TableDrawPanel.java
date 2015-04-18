@@ -75,7 +75,15 @@ public class TableDrawPanel extends JPanel implements Observer {
     	}
     	
     	if(command == 2){
-    		
+    		handCards = dealer.getHandCards();
+        	
+			for(int j = 0; j < currCards; j++){
+			if (handCards[j] != null)
+				g.drawImage( cardImages.getCardImage(handCards[j]), xpos, 150, null);
+			xpos += 25;
+			}
+		
+		xpos = 10;
     	}
     	
     }
