@@ -16,7 +16,7 @@ public class Player {
     private Card[] handCards;
     private boolean isWinner;
     private int index;
-    private int handSize;
+    public int handSize;
     private boolean isTurn;
     
     public Player(){
@@ -36,8 +36,14 @@ public class Player {
     
     public void removeCardFromHand(Card card)
     {
-        handCards = ArrayUtils.remove(handCards, ArrayUtils.indexOf(handCards, card));
-        handSize--;
+    	
+    	for(int i = 0; i<handSize; i++){
+    		if(handCards[i].toString().equals(card.toString())){
+    			handCards = ArrayUtils.remove(handCards,i);
+    	        handSize--;
+    		}
+    	}
+        
     }
     
     public boolean isHandEmpty()

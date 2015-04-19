@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -13,11 +14,15 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
+
 import model.Card;
 import model.Card.Rank;
 import model.Dealer;
 import model.Player;
+
 import org.apache.log4j.Logger;
+
+import javax.swing.JLabel;
 
 public class DealPanel extends javax.swing.JPanel {
 
@@ -28,6 +33,9 @@ public class DealPanel extends javax.swing.JPanel {
         Rank currRank;
         ArrayList<Rank> playedRanks = new ArrayList<>();
         Random nRand;
+        JLabel lblRank = new JLabel("Rank");
+        int currDiscardCount = 0;
+        
     /** Creates new form dealPanel 
      * @throws IOException */
     public DealPanel() throws IOException {
@@ -67,7 +75,7 @@ public class DealPanel extends javax.swing.JPanel {
             .addGap(0, 255, Short.MAX_VALUE)
         );
 
-        handsComboBox.setModel(new DefaultComboBoxModel(new String[] {"Heart", "Diamond", "Spade", "Club"}));
+        handsComboBox.setModel(new DefaultComboBoxModel(new String[] {"SPADE ", "HEART ", "DIAMOND ", "CLUB"}));
         handsComboBox.setSelectedIndex(0);
 
         btnAddCard.setText("Call Bluff!");
@@ -83,21 +91,14 @@ public class DealPanel extends javax.swing.JPanel {
         });
         
         JComboBox rankComboBox = new JComboBox();
-        rankComboBox.setModel(new DefaultComboBoxModel(new String[] {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"}));
+        rankComboBox.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "A"}));
         
         JButton btnRemoveCard = new JButton("Put Down Card");
         btnRemoveCard.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
-        		Object selectedSuit = handsComboBox.getSelectedItem();
-        		String suit = suitConvert(selectedSuit.toString());
-        		
-        		
-        		Object selectedRank = rankComboBox.getSelectedItem();
-        		String rank = rankConvert(selectedRank.toString());
-        		
-        		String card = rank+suit;
-      
-        		//dealer.removeCard(card);
+        		System.out.println(rankComboBox.getSelectedIndex()+"hai"+handsComboBox.getSelectedIndex());
+        		Card tempcard = new Card(rankComboBox.getSelectedIndex()+2, handsComboBox.getSelectedIndex());
+        		dealer.removeCard(tempcard,players[0]);
         		
         		drawPanel.command =2;
         		//drawPanel.currCards--;
@@ -105,13 +106,21 @@ public class DealPanel extends javax.swing.JPanel {
         	}
         });
         
+        JLabel lblCurrentRank = new JLabel("Current rank: ");
+        
+       
+        
         
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         layout.setHorizontalGroup(
-        	layout.createParallelGroup(Alignment.TRAILING)
+        	layout.createParallelGroup(Alignment.LEADING)
         		.addGroup(layout.createSequentialGroup()
-        			.addContainerGap(209, Short.MAX_VALUE)
+        			.addContainerGap()
+        			.addComponent(lblCurrentRank)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
+        			.addComponent(lblRank)
+        			.addPreferredGap(ComponentPlacement.RELATED, 134, Short.MAX_VALUE)
         			.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
         			.addGap(18)
         			.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
@@ -120,24 +129,27 @@ public class DealPanel extends javax.swing.JPanel {
         			.addPreferredGap(ComponentPlacement.RELATED)
         			.addComponent(btnAddCard, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap())
-        		.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
+        		.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
         	layout.createParallelGroup(Alignment.TRAILING)
         		.addGroup(layout.createSequentialGroup()
-        			.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+        			.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
         			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(btnAddCard)
-        				.addComponent(btnRemoveCard)
-        				.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        				.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        			.addGroup(layout.createParallelGroup(Alignment.LEADING)
+        				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+        					.addComponent(btnAddCard)
+        					.addComponent(btnRemoveCard)
+        					.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+        					.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+        					.addComponent(lblCurrentRank)
+        					.addComponent(lblRank)))
         			.addContainerGap())
         );
         this.setLayout(layout);
     }// </editor-fold>
 
-    
     private void dealButtonActionPerformed(java.awt.event.ActionEvent evt) throws InterruptedException {
         drawPanel.command = 1;
     	repaint();
@@ -177,6 +189,7 @@ public class DealPanel extends javax.swing.JPanel {
     	}
     }
     
+ 
     /**
      * deal once
      */
@@ -211,6 +224,8 @@ public class DealPanel extends javax.swing.JPanel {
             tempRank = Rank.getRank(randomValue);
             }while(playedRanks.contains(tempRank));
             playedRanks.add(tempRank);
+           // System.out.println(tempRank.toString());
+            lblRank.setText(tempRank.toString());
             return tempRank;
         }
         
@@ -221,13 +236,14 @@ public class DealPanel extends javax.swing.JPanel {
         
         public void startGame()
         {
-            discardPile = dealer.getDiscardPile();
+            
             int i = 0;
             while(!players[0].isWinner() && !players[1].isWinner() && !players[2].isWinner() && !players[3].isWinner())
             {
                 currRank = getCurrPlayRank();
                 break;
             }
+           
         }
         
 	public void setDealer(Dealer dealer) {
@@ -270,6 +286,7 @@ public class DealPanel extends javax.swing.JPanel {
 					dealPanel.deal();
                                         dealPanel.getPlayers();
                                         dealPanel.startGame();
+                                        
 				}
 			});	
 	}

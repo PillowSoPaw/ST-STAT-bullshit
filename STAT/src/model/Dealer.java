@@ -12,7 +12,7 @@ public class Dealer extends Observable {
 	private Deck deck;
 	private int handsTotal;
         private Player[] players = new Player[4];
-        private Card[] discardPile;
+        private Card[] discardPile = new Card[52];
 	private DealerState dealerState = DealerState.CLEAR; 
 	private boolean scored = false;
 	private ArrayList<Score> scoreList = new ArrayList<Score>();
@@ -22,6 +22,7 @@ public class Dealer extends Observable {
 	private HashMap<Score, Boolean> scoreToTiedMap = new HashMap<Score, Boolean>();
 	
 	int currCards = 13;
+	int currDiscardCount = 0;
 
 	enum DealerState {
 		CLEAR,
@@ -96,8 +97,15 @@ public class Dealer extends Observable {
 	public void removeCard(Card card, Player player)
         {	
 		player.removeCardFromHand(card);
+		addToDiscard(card);
 	}
         
+	public void addToDiscard(Card card){
+		discardPile[currDiscardCount]=card;
+		currDiscardCount++;
+		System.out.println("haha");
+		displayEntireHand();
+	}
 	public void clear() {
 		for (int i = 0; i < getHandsTotal(); i++) {
 		//	Arrays.fill(handCards[i], null);
@@ -111,6 +119,21 @@ public class Dealer extends Observable {
 		setChanged();
 	}
 	
+	 public void displayEntireHand()
+	    {
+	        if(!isHandEmpty()){
+	        for(int i = 0; i < currDiscardCount; i++)
+	            System.out.println(discardPile[i].toString());
+	        }else
+	        {
+	            System.out.println("HAND EMPTY");
+	        }
+	    }
+	 
+	 public boolean isHandEmpty()
+	    {
+	        return discardPile.length == 0;
+	    }
 	@Override
 	public String toString() {	
 		String str = "";
