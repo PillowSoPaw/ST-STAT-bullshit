@@ -5,24 +5,23 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-
+import java.util.Scanner;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingUtilities;
-
 import model.Card;
 import model.Card.Rank;
 import model.Dealer;
 import model.Player;
-
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
-
-import javax.swing.JLabel;
 
 public class DealPanel extends javax.swing.JPanel {
 
@@ -35,17 +34,19 @@ public class DealPanel extends javax.swing.JPanel {
         Random nRand;
         JLabel lblRank = new JLabel("Rank");
         int currDiscardCount = 0;
-        
+        int currPlayer = 0;
+        Card lastCardDropped;
     /** Creates new form dealPanel 
      * @throws IOException */
     public DealPanel() throws IOException {
-        initComponents();
+        
         
         ////////////////////
         // custom init
         
         // a default dealer
         dealer = new Dealer();
+        initComponents();
         dealer.addObserver(drawPanel);
         
     }
@@ -74,9 +75,9 @@ public class DealPanel extends javax.swing.JPanel {
             drawPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 255, Short.MAX_VALUE)
         );
-
-        handsComboBox.setModel(new DefaultComboBoxModel(new String[] {"SPADE ", "HEART ", "DIAMOND ", "CLUB"}));
-        handsComboBox.setSelectedIndex(0);
+        
+        //handsComboBox.setModel(new DefaultComboBoxModel((String[]) cards.toArray()));
+        //handsComboBox.setSelectedIndex(0);
 
         btnAddCard.setText("Call Bluff!");
         btnAddCard.addActionListener(new java.awt.event.ActionListener() {
@@ -90,17 +91,21 @@ public class DealPanel extends javax.swing.JPanel {
             }
         });
         
-        JComboBox rankComboBox = new JComboBox();
-        rankComboBox.setModel(new DefaultComboBoxModel(new String[] {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "A"}));
+        //JComboBox rankComboBox = new JComboBox();
+        //rankComboBox.setModel(new DefaultComboBoxModel();
         
         JButton btnRemoveCard = new JButton("Put Down Card");
         btnRemoveCard.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
-        		System.out.println(rankComboBox.getSelectedIndex()+"hai"+handsComboBox.getSelectedIndex());
-        		Card tempcard = new Card(rankComboBox.getSelectedIndex()+2, handsComboBox.getSelectedIndex());
+        		//System.out.println(rankComboBox.getSelectedIndex()+"hai"+handsComboBox.getSelectedIndex());
+                        
+        		Card tempcard = (Card) handsComboBox.getModel().getSelectedItem();
+                        lastCardDropped = tempcard;
         		dealer.removeCard(tempcard,players[0]);
-        		
-        		drawPanel.command =2;
+        		setComboBox(dealer.getHuman().getHand());
+        		drawPanel.command = 2;
+                        drawPanel.input = true;
+                        
         		//drawPanel.currCards--;
             	repaint();
         	}
@@ -134,7 +139,7 @@ public class DealPanel extends javax.swing.JPanel {
         					.addGap(32)
         					.addComponent(btnGivePile)
         					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        					.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+        					//.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
         					.addGap(18)
         					.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
         					.addPreferredGap(ComponentPlacement.RELATED)
@@ -153,8 +158,8 @@ public class DealPanel extends javax.swing.JPanel {
         				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
         					.addComponent(btnAddCard)
         					.addComponent(btnRemoveCard)
-        					.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        					.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        					.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        					//.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
         					.addComponent(lblCurrentRank)
         					.addComponent(lblRank)
@@ -176,6 +181,12 @@ public class DealPanel extends javax.swing.JPanel {
     // End of variables declaration
 
     int dealState = 0;
+    
+    public void setComboBox(Card[] cards)
+    {
+        this.handsComboBox.setModel(new DefaultComboBoxModel(cards));
+        this.handsComboBox.setSelectedIndex(0);
+    }
     
     public String suitConvert(String suit){
     	switch(suit){
@@ -212,6 +223,7 @@ public class DealPanel extends javax.swing.JPanel {
     		//dealer.scoreHands();
     	} else {
     		dealer.deal();
+                setComboBox(dealer.getHuman().getHand());
     	}
     	
     	dealer.notifyObservers();
@@ -233,7 +245,7 @@ public class DealPanel extends javax.swing.JPanel {
             
             Rank tempRank;
             do{
-            int randomValue = nRand.nextInt(65536) % 14;
+            int randomValue = nRand.nextInt(65536) % 13 + 1;
             System.out.println(randomValue);
             tempRank = Rank.getRank(randomValue);
             }while(playedRanks.contains(tempRank));
@@ -243,19 +255,124 @@ public class DealPanel extends javax.swing.JPanel {
             return tempRank;
         }
         
-        public void playRound()
+        public boolean isBluff(Card tempCard){
+            if(currRank != tempCard.getRank())
+                return true;
+            return false;
+        }
+        
+                public double getBluffProbability(int playersRankedCards, int opponentsHand){
+                    double num;
+                if(playersRankedCards == 4){
+                        return 1;
+                }
+                    else if(playersRankedCards == 3){
+                        num = 1;
+                            return (((num) / 52) * opponentsHand);
+                }
+                else if(playersRankedCards == 2){
+                    num = 2;
+                        return 1 - (((num) / 52) * opponentsHand);
+                }
+                else if(playersRankedCards == 1){
+                    num = 3;
+                        return 1 - (((num) / 52) * opponentsHand);
+                }
+                else return 0;
+                }
+                
+                public double getTruthProbability(int playersRankedCards, int opponentsHand){
+                if(playersRankedCards == 4){
+                        return 0;
+                }
+                    else if(playersRankedCards == 3){
+                        return ((1 / 52) * opponentsHand);
+                }
+                    else if(playersRankedCards == 2){
+                        return ((2 / 52) * opponentsHand);
+                }
+                    else if(playersRankedCards == 1){
+                        return ((3 / 52) * opponentsHand);
+                }
+                else return 0;
+                }
+        
+        public boolean playRound()
         {
-            
+            int turn = 0;
+            currPlayer = 0;
+            while(turn != 4){
+                Player tempPlayer = players[currPlayer];
+                Random rand = new Random();
+                int randomNum = rand.nextInt(((tempPlayer.handSize() - 1) - 0) + 1);
+                if(currPlayer != 0){
+                    if(currPlayer < 4){
+                        Card tempCard = null;
+                        for(int i = 0; i < tempPlayer.handSize(); i++){
+                            if(tempPlayer.getHand()[i].getRank() == currRank)
+                            {
+                                tempCard = tempPlayer.getHand()[i];
+                                System.out.println(tempCard.toString());
+                            }
+                        }
+
+                        if(tempCard == null)
+                            tempCard = tempPlayer.getHand()[randomNum];
+                        
+                        Card[] tempCards = new Card[52];
+                        tempCards = dealer.getHuman().getHand();
+                        tempCards[51] = lastCardDropped;
+                        int tempLength = 52;
+                        
+                        int k = 0;
+                        for(int i = 0; i < tempLength; i++)
+                        {
+                            if(tempCards[i] != null)
+                                if(currRank == tempCards[i].getRank())
+                                    k++;
+                        }
+                        
+                        JOptionPane.showMessageDialog(null, "Player "+currPlayer + " dropped a card. He has " + tempPlayer.handSize + " cards. He has " +  
+                                this.getBluffProbability(k, tempPlayer.handSize()) + " chance of bluffing. You have " + k + " in this rank.");
+                        tempPlayer.removeCardFromHand(tempCard);  
+                        dealer.addToDiscard(tempCard);
+
+                        if (JOptionPane.showConfirmDialog(null, "Call Bluff?", "WARNING",
+                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                            JOptionPane.showMessageDialog(null, "Player 1 has called bluff on Player " + currPlayer + "!");
+                            if(isBluff(tempCard)){
+                                JOptionPane.showMessageDialog(null, "Player " + currPlayer + " is bluffing!");
+                                dealer.giveDiscardPileToPlayer(tempPlayer);
+                            }else{
+                                JOptionPane.showMessageDialog(null, "Player 1 called wrong!");
+                                dealer.giveDiscardPileToPlayer(dealer.getHuman());
+                                setComboBox(dealer.getHuman().getHand());
+                                lastCardDropped = new Card();
+                            }
+                            drawPanel.command = 1;
+                            repaint();
+                        }
+
+                        currPlayer++;
+                    }else currPlayer = 0;
+                    drawPanel.input = false;
+                }else {
+                    while(!drawPanel.input){
+                        System.out.println("no input yet.");
+                    }
+                    currPlayer++;
+                }
+                turn++;
+            }
+            return true;
         }
         
         public void startGame()
         {
-            
-            int i = 0;
             while(!players[0].isWinner() && !players[1].isWinner() && !players[2].isWinner() && !players[3].isWinner())
             {
                 currRank = getCurrPlayRank();
-                break;
+                playRound();
             }
            
         }
@@ -292,16 +409,9 @@ public class DealPanel extends javax.swing.JPanel {
 		// deal, flop, turn, river, score
                 jFrame.pack();
                 jFrame.setVisible(true);
-                
-			SwingUtilities.invokeLater(new Runnable() {
-
-				@Override
-				public void run() {
 					dealPanel.deal();
+                                        Thread.sleep(1000);
                                         dealPanel.getPlayers();
                                         dealPanel.startGame();
-                                        
-				}
-			});	
 	}
 }
