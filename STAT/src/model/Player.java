@@ -41,6 +41,7 @@ public class Player {
     		if(handCards[i].toString().equals(card.toString())){
     			handCards = ArrayUtils.remove(handCards,i);
     	        handSize--;
+    	        index--;
     		}
     	}
         

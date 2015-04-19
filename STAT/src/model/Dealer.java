@@ -273,10 +273,12 @@ public class Dealer extends Observable {
         
         public void giveDiscardPileToPlayer(Player player)
         {
-            for(int i = 0; i < this.discardPile.length; i++){
+            for(int i = 0; i < currDiscardCount; i++){
             player.addCardToHand(this.discardPile[i]);
+            
             }
-            ArrayUtils.removeAll(this.discardPile);
+            currDiscardCount = 0;
+            
             
         }
 //	public Card[] getTableCards() {

@@ -88,6 +88,7 @@ public class TableDrawPanel extends JPanel implements Observer {
 		xpos = 10;
     	}
     	
+    	
     }
 
 	@Override

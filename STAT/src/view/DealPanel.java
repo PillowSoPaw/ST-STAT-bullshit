@@ -108,6 +108,15 @@ public class DealPanel extends javax.swing.JPanel {
         
         JLabel lblCurrentRank = new JLabel("Current rank: ");
         
+        JButton btnGivePile = new JButton("give pile");
+        btnGivePile.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		dealer.giveDiscardPileToPlayer(players[0]);
+        		drawPanel.command = 1;
+        		repaint();
+        	}
+        });
+        
        
         
         
@@ -116,20 +125,24 @@ public class DealPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
         	layout.createParallelGroup(Alignment.LEADING)
         		.addGroup(layout.createSequentialGroup()
-        			.addContainerGap()
-        			.addComponent(lblCurrentRank)
-        			.addPreferredGap(ComponentPlacement.UNRELATED)
-        			.addComponent(lblRank)
-        			.addPreferredGap(ComponentPlacement.RELATED, 134, Short.MAX_VALUE)
-        			.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
-        			.addGap(18)
-        			.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(btnRemoveCard, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
-        			.addPreferredGap(ComponentPlacement.RELATED)
-        			.addComponent(btnAddCard, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+        			.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+        				.addGroup(layout.createSequentialGroup()
+        					.addContainerGap()
+        					.addComponent(lblCurrentRank)
+        					.addPreferredGap(ComponentPlacement.UNRELATED)
+        					.addComponent(lblRank)
+        					.addGap(32)
+        					.addComponent(btnGivePile)
+        					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        					.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, 110, GroupLayout.PREFERRED_SIZE)
+        					.addGap(18)
+        					.addComponent(handsComboBox, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(btnRemoveCard, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
+        					.addPreferredGap(ComponentPlacement.RELATED)
+        					.addComponent(btnAddCard, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE))
+        				.addComponent(drawPanel, GroupLayout.PREFERRED_SIZE, 837, GroupLayout.PREFERRED_SIZE))
         			.addContainerGap())
-        		.addComponent(drawPanel, GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
         	layout.createParallelGroup(Alignment.TRAILING)
@@ -144,7 +157,8 @@ public class DealPanel extends javax.swing.JPanel {
         					.addComponent(rankComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         				.addGroup(layout.createParallelGroup(Alignment.BASELINE)
         					.addComponent(lblCurrentRank)
-        					.addComponent(lblRank)))
+        					.addComponent(lblRank)
+        					.addComponent(btnGivePile)))
         			.addContainerGap())
         );
         this.setLayout(layout);
