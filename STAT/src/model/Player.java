@@ -6,6 +6,7 @@
 
 package model;
 
+import model.Card.Rank;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -67,6 +68,7 @@ public class Player {
         return handSize;
     }
     
+    
     public void displayEntireHand()
     {
         if(!isHandEmpty()){
@@ -76,6 +78,17 @@ public class Player {
         {
             System.out.println("HAND EMPTY");
         }
+    }
+    
+    public int countThisKindOfRank(Rank rank)
+    {
+        int k = 0;
+        for(int i = 0; i < handSize(); i++)
+        {
+            if(rank == this.handCards[i].getRank())
+                k++;
+        }
+        return k;
     }
     
     public Card getCardByIndex(int i)
