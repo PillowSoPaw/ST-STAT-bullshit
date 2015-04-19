@@ -22,7 +22,7 @@ public class TableDrawPanel extends JPanel implements Observer {
 	//used for telling the paint() what to do once repaint is called.
 	int command;
 	//the current cards the player has
-	int currCards = 13;
+	//int currCards = 13;
 	
 	public TableDrawPanel() throws IOException {
 		// init images
@@ -53,7 +53,7 @@ public class TableDrawPanel extends JPanel implements Observer {
     		
     		handCards = player.getHand();
     	
-    			for(int j = 0; j < currCards; j++){
+    			for(int j = 0; j < handCards.length; j++){
     			if (handCards[j] != null)
     				g.drawImage( cardImages.getCardImage(handCards[j]), xpos, 150, null);
     			xpos += 25;
@@ -64,8 +64,9 @@ public class TableDrawPanel extends JPanel implements Observer {
     	
     	if(command == 1){
     		//note that my method refreshes the whole hand instead of adding the card.
-    		
-    			for(int j = 0; j < currCards; j++){
+                player = dealer.getHuman();
+    		handCards = player.getHand();
+    			for(int j = 0; j < handCards.length; j++){
     			if (handCards[j] != null)
     				g.drawImage( cardImages.getCardImage(handCards[j]), xpos, 150, null);
     			xpos += 25;
@@ -76,8 +77,9 @@ public class TableDrawPanel extends JPanel implements Observer {
     	
     	if(command == 2){
     		//handCards = dealer.getHandCards();
-        	
-			for(int j = 0; j < currCards; j++){
+                player = dealer.getHuman();
+        	handCards = player.getHand();
+			for(int j = 0; j < handCards.length; j++){
 			if (handCards[j] != null)
 				g.drawImage( cardImages.getCardImage(handCards[j]), xpos, 150, null);
 			xpos += 25;

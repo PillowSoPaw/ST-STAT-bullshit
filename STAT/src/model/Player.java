@@ -17,6 +17,8 @@ public class Player {
     private boolean isWinner;
     private int index;
     private int handSize;
+    private boolean isTurn;
+    
     public Player(){
         isWinner = false;
         handCards = new Card[52];

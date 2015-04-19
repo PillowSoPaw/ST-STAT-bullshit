@@ -1,29 +1,33 @@
 package view;
 
-import java.io.IOException;
-
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-import model.Dealer;
-import model.Card.Rank;
-
-import org.apache.log4j.Logger;
-
-import javax.swing.JButton;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.SwingUtilities;
+import model.Card;
+import model.Card.Rank;
+import model.Dealer;
+import model.Player;
+import org.apache.log4j.Logger;
 
 public class DealPanel extends javax.swing.JPanel {
 
 	static Logger logger = Logger.getLogger(DealPanel.class); 
-	
+	Player[] players;
+        Dealer dealer;
+        Card[] discardPile;
+        Rank currRank;
+        ArrayList<Rank> playedRanks = new ArrayList<>();
+        Random nRand;
     /** Creates new form dealPanel 
      * @throws IOException */
     public DealPanel() throws IOException {
@@ -66,7 +70,7 @@ public class DealPanel extends javax.swing.JPanel {
         handsComboBox.setModel(new DefaultComboBoxModel(new String[] {"Heart", "Diamond", "Spade", "Club"}));
         handsComboBox.setSelectedIndex(0);
 
-        btnAddCard.setText("Add Card");
+        btnAddCard.setText("Call Bluff!");
         btnAddCard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
@@ -81,7 +85,7 @@ public class DealPanel extends javax.swing.JPanel {
         JComboBox rankComboBox = new JComboBox();
         rankComboBox.setModel(new DefaultComboBoxModel(new String[] {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"}));
         
-        JButton btnRemoveCard = new JButton("Remove Card");
+        JButton btnRemoveCard = new JButton("Put Down Card");
         btnRemoveCard.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		Object selectedSuit = handsComboBox.getSelectedItem();
@@ -96,7 +100,7 @@ public class DealPanel extends javax.swing.JPanel {
         		//dealer.removeCard(card);
         		
         		drawPanel.command =2;
-        		drawPanel.currCards--;
+        		//drawPanel.currCards--;
             	repaint();
         	}
         });
@@ -135,6 +139,7 @@ public class DealPanel extends javax.swing.JPanel {
 
     
     private void dealButtonActionPerformed(java.awt.event.ActionEvent evt) throws InterruptedException {
+        drawPanel.command = 1;
     	repaint();
     }
     
@@ -186,8 +191,45 @@ public class DealPanel extends javax.swing.JPanel {
     	logger.debug("deal: " + dealer.toString());
     }
     
-    Dealer dealer;
-
+        public void getPlayers()
+        {
+            this.players = dealer.getAllPlayers();
+        }
+        
+        public Rank getCurrPlayRank()
+        {
+            nRand = new Random();
+            if(playedRanks.size() == 13)
+            {
+                playedRanks.clear();
+            }
+            
+            Rank tempRank;
+            do{
+            int randomValue = nRand.nextInt(65536) % 14;
+            System.out.println(randomValue);
+            tempRank = Rank.getRank(randomValue);
+            }while(playedRanks.contains(tempRank));
+            playedRanks.add(tempRank);
+            return tempRank;
+        }
+        
+        public void playRound()
+        {
+            
+        }
+        
+        public void startGame()
+        {
+            discardPile = dealer.getDiscardPile();
+            int i = 0;
+            while(!players[0].isWinner() && !players[1].isWinner() && !players[2].isWinner() && !players[3].isWinner())
+            {
+                currRank = getCurrPlayRank();
+                break;
+            }
+        }
+        
 	public void setDealer(Dealer dealer) {
 		this.dealer = dealer;
 		dealer.addObserver(drawPanel);
@@ -220,13 +262,14 @@ public class DealPanel extends javax.swing.JPanel {
 		// deal, flop, turn, river, score
                 jFrame.pack();
                 jFrame.setVisible(true);
-                Players[] players;
+                
 			SwingUtilities.invokeLater(new Runnable() {
 
 				@Override
 				public void run() {
 					dealPanel.deal();
-                                        players = dealer.getAllPlayers();
+                                        dealPanel.getPlayers();
+                                        dealPanel.startGame();
 				}
 			});	
 	}
